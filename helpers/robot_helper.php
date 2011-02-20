@@ -9,7 +9,7 @@
  *  time being, and will probably block 99.9% of spam.
  * @return array A two element array containing a question and answer, respectively
  */
-function get_spam_check()
+function get_spam_check($store = TRUE)
 {
     $CI = &get_instance();
     $CI->load->helper('array');
@@ -50,7 +50,16 @@ function get_spam_check()
         $test = array ("What is $r $operator $a?", ($r / $a));
     }
 
+    $CI = &get_instance();
+    $CI->session->set_userdata('spam_check_answer', $test[1]);
+
     return $test;
+}
+
+function spam_check_answer($answer)
+{
+    $CI = &get_instance();
+    return ($answer == $CI->session->userdata('spam_check_answer'));
 }
 
 
