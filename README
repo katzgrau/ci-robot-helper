@@ -1,1 +1,52 @@
-This is a CodeIgniter spark package used for dealing with robot spam.
+# The Robot Helper
+
+CodeIgniter comes with a Captcha implementation, but sometimes you just need
+something quicker and easier, like a simple math question.
+
+This spark is in use on the [GetSparks.org Registration Page](http://getsparks.org/register).
+
+## Usage
+
+The spark doesn't autoload anything, so you'll need to load the spark and
+the robot helper.
+
+The spark's usage  involves on two methods: `get_spam_check` and `spam_check_answer`.
+
+`get_spam_check()` returns a 2-element array. The first element contains a question
+for the user as a string. The second element contains the answer.
+
+    class Users extends Controller
+    {
+        # .. Other stuff ..
+
+        public function register()
+        {
+            $this->load->spark('robot-helper/VERSION');
+            $this->load->helper('robot');
+
+            $submitted   = $this->input->post('submit');
+            $math_answer = $this->input->post('math_answer');
+
+            if($submitted)
+            {
+                if(spam_check_answer($math_answer))
+                {
+                    # Register the user, and redirect to the account page
+                }
+                else
+                {
+                    # Uh oh, the user didn't pass
+                }
+            }
+
+            # Call get_spam_check(), which is created by robot-helper
+            list($question, $answer) = get_spam_check();
+
+            $data['spam_question'] = $question;
+            $data['spam_answer']   = $answer;
+
+            $this->load->view('users/register', $data);
+        }
+
+        # .. Other stuff ..
+    }
